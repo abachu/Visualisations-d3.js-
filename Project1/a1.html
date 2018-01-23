@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>a1</title>
+</head>
+<meta charset="utf-8">
+<script src="http://www.cis.umassd.edu/~dkoop/dsc530-2017sp/a1/us-refugees.js" type="text/javascript"></script>
+<body>	
+<style>
+ 		h1{
+    		color: green;
+		}
+		h3.stu{
+    		color: green;
+		}
+    	h3.norm{
+    		font-weight: normal
+    	}
+		h3.thicker {
+    		font-style: normal;
+   		color: red;
+  }
+		</style>
+				<h1>Akash Bachu</h1>
+				<h3 class="stu">#01668053</h3>
+				<h3 class="norm"><em>Data Visualization (DSC 530)</em></h3>
+				<h3 class="thicker">Assignment# 1</h3>
+				<p>"This assignment is all my own work. I did not copy the code from any other source."</p>
+  <svg id="initials" height="150" width="250">
+  <line x1="10" y1="10" x2="10" y2="100" style="stroke:rgb(255,0,0);stroke-width:2" />
+  <line x1="10" y1="10" x2="50" y2="10"
+  style="stroke:rgb(255,0,0);stroke-width:2"/>
+  <line x1="50" y1="10" x2="50" y2="100"
+  style="stroke:rgb(255,0,0);stroke-width:2"/>
+  <line x1="10" y1="65" x2="50" y2="65"
+  style="stroke:rgb(255,0,0);stroke-width:2"/>
+   <line x1="70" y1="10" x2="70" y2="100" style="stroke:rgb(255,0,0);stroke-width:2" />
+  <line x1="70" y1="10" x2="110" y2="10"
+  style="stroke:rgb(255,0,0);stroke-width:2"/>
+  <line x1="110" y1="10" x2="110" y2="100"
+  style="stroke:rgb(255,0,0);stroke-width:2"/>
+  <line x1="70" y1="65" x2="110" y2="65"
+  style="stroke:rgb(255,0,0);stroke-width:2"/>
+   <line x1="130" y1="10" x2="130" y2="100" style="stroke:rgb(255,0,0);stroke-width:2" />
+  <line x1="130" y1="10" x2="170" y2="10"
+  style="stroke:rgb(255,0,0);stroke-width:2"/>
+  <line x1="170" y1="10" x2="170" y2="100"
+  style="stroke:rgb(255,0,0);stroke-width:2"/>
+  <line x1="170" y1="100" x2="130" y2="100"
+  style="stroke:rgb(255,0,0);stroke-width:2"/>
+  <line x1="130" y1="55" x2="170" y2="55"
+  style="stroke:rgb(255,0,0);stroke-width:2"/>
+  </svg>
+
+
+  <h1 align = 'center'><u><font color='DarkRed'>US Refugee Visualization</font></u></h1>
+  Select Year: <input type="text" id="year" value="" />  
+	<div id="barchart">
+	</div>
+ 	<script>
+	 var refugees_data = [];
+	 var refugees_datayear=[];
+	 var keys;
+	 var sum = [];
+	 var textField = document.getElementById("year");
+	 var lastHighlightedBar = null;
+
+	 function resetLastBar() {
+		if (lastHighlightedBar != null) {
+		    lastHighlightedBar .setAttribute("fill", "blue");
+		    lastHighlightedBar = null;
+		}
+	 }
+	 function mouseOver(e) {
+		resetLastBar();
+		e.target.setAttribute("fill", "red");
+                textField.setAttribute('value', refugees_datayear[e.target.id]);
+         }
+
+	 function mouseOut(e) {
+		e.target.setAttribute("fill", "blue");
+		textField.setAttribute('value', '');
+         }
+      function textChange(e) {
+		resetLastBar();
+		var text = e.target.value;
+		var index = refugees_datayear.indexOf(parseInt(text));
+		if (index > -1) {
+		   var bar = document.getElementById(index);
+		   if (bar != null) {
+			bar.setAttribute("fill", "red");
+			lastHighlightedBar = bar;
+		   }
+		}
+	 }
+       textField.addEventListener('keyup', textChange);
+
+	 function getTotal()
+	 {
+		 refugees.forEach(function(b)
+		 {
+			 refugees_data.push(b)
+			 keys = Object.keys(b);
+		 });
+		 var keys_1 = keys.shift();
+		 console.log(keys_1);
+		var year = [];
+		 refugees_data.forEach(function(l,i)
+		 {
+			 var sum_year = 0;
+			 keys.map(function(d)
+			 {
+				 sum_year = sum_year + refugees_data[i][d]
+			 })
+			 // Take All years and save in the variable 
+			 year.push(l.Year)
+			 //console.log(l.Year)
+			 sum.push(sum_year);
+		 })
+		 // Printing the all years
+		 console.log(year);
+		 refugees_datayear=year;
+	 }
+	 getTotal();
+	 console.log(sum);
+	 var width=600, height=400;
+	 var s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+	 s.setAttribute("width", width);
+	 s.setAttribute("height", height);
+	 s.setAttribute("transform", "translate(0,400)");
+	 var main = document.getElementById("barchart");
+	 main.appendChild(s);
+	 var barwidth = (600/sum.length);
+	 //s.addEventListener("mouseover", mouseOver);
+     function addEltToSVG(svg, name, attrs)
+      {
+        var element = document.createElementNS("http://www.w3.org/2000/svg", name);
+        if (attrs === undefined) attrs = {};
+        for (var key in attrs) {
+          element.setAttributeNS(null, key, attrs[key]);
+        }
+        svg.appendChild(element);
+        element.addEventListener("mouseover", mouseOver);
+		element.addEventListener("mouseout", mouseOut);
+      }
+	  sum.forEach(function(d, i) {
+      var rect = addEltToSVG(s, "rect", 
+                         {"width": barwidth-2, 
+                          "height": 3 * d/2000,
+						  "x":barwidth * i,
+                          "y": height - (3 * d/2000),//code is working.... hurray!!!!
+						  fill:"blue",
+						  "id":i});
+});
+	 </script>
+    </body>
+	</html>
